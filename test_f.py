@@ -11,6 +11,7 @@ def client():
         yield client
     
 token_path = '/get-token'
+path = '/adios'
 
 def test1(client):
     """Start with a blank database."""
@@ -40,7 +41,7 @@ def test4(client):
 
     response = client.get(token_path)
 
-    response = client.post('/adios',json = {
+    response = client.post(path,json = {
         "2": 'no',
     },headers={'X-CSRFToken':response.get_json()['token']})
     assert response.json['no vamos a ver']  == 'si' 
@@ -49,7 +50,7 @@ def test5(client):
     """Start with a blank database."""
 
     response = client.get(token_path)
-    response = client.post('/adios',json = {
+    response = client.post(path,json = {
         "2": 'si',
     },headers={'X-CSRFToken':response.get_json()['token']})
     assert response.json['no vamos a ver']  == 'no' 
@@ -78,16 +79,16 @@ def test7():
 def test8():
     """Start with a blank database."""
     Singleton._instance = None
-    s = Singleton()
+    Singleton()
     with pytest.raises(RuntimeError):
-        raise Singleton()
+        Singleton()
 
 
 def test9(client):
     """Start with a blank database."""
 
     response = client.get(token_path)
-    response = client.post('/adios',json = {
+    response = client.post(path,json = {
         "2": 'aaa',
     },headers={'X-CSRFToken':response.get_json()['token']})
     assert response.get_json() is None
