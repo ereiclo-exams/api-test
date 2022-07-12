@@ -1,5 +1,4 @@
 from wsgiref import headers
-
 from regex import R
 from main import app
 from main import Singleton,csrf
