@@ -12,7 +12,6 @@ import pytest
 @pytest.fixture
 def client():
     db_fd,path = tempfile.mkstemp()
-    basedir = os.path.abspath(os.path.dirname(__file__))
     app.config['TESTING'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +  path
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
