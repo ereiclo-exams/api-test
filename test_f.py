@@ -1,17 +1,50 @@
 from wsgiref import headers
+import os
+import tempfile
+from flask_sqlalchemy import SQLAlchemy
 from regex import R
-from main import app
+import sqlalchemy
+from main import app,db,Student
 from main import Singleton,csrf
 import pytest
 
 
 @pytest.fixture
 def client():
+    db_fd,path = tempfile.mkstemp()
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    app.config['TESTING'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +  path
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     with app.test_client() as client:
+        with app.app_context():
+            db.create_all()
+
         yield client
+    
+    os.close(db_fd)
     
 token_path = '/get-token'
 path = '/adios'
+
+def test_db_student_firstname(client):
+    new_student = Student(firstname = 'Eric')
+    db.session.add(new_student)
+    db.session.commit()
+    
+    assert Student.query.get(1).firstname == 'Eric' 
+
+def test_student_repr(client):
+    new_student = Student(firstname = 'Eric')
+    assert  new_student.__repr__() == '<Student Eric>'
+
+def test_db_null_student(client):
+
+    assert Student.query.all() == [] 
+
+
+
 
 def test1(client):
     """Start with a blank database."""

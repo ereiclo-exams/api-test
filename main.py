@@ -1,4 +1,6 @@
+import os
 from crypt import methods
+from re import U
 from urllib import response
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +15,20 @@ csrf = CSRFProtect()
 csrf.init_app(app) # Compliant
 app.secret_key = "12345678"
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+db = SQLAlchemy(app)
+
+
+
+class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    firstname = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<Student {self.firstname}>'
 
 class Singleton:
     _instance = None
@@ -71,5 +86,6 @@ def singleton():
 
 
 if __name__ == '__main__':
+    print(Student.query.all())
     app.run(host='localhost',port=5002,debug=True)
 
