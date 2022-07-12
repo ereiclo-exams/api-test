@@ -12,7 +12,6 @@ app = Flask(__name__)
 csrf = CSRFProtect()
 csrf.init_app(app) # Compliant
 app.secret_key = "12345678"
-# print(csrf._get_csrf_token())
 
 
 
@@ -33,10 +32,7 @@ class Singleton:
             Singleton._instance = self
 
 
-# class Usuario(db.Model):
-    # def __init__(self, name):
-        # self.name  = name
-        # self.count = 0
+
 
 @app.route('/')
 def index():
